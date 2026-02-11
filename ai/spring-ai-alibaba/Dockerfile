@@ -24,4 +24,7 @@ WORKDIR /app
 # 从 builder 阶段复制构建好的 jar
 COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 9000
+ENV APP_ID=""
+ENV DASHSCOPE_API_KEY=""
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
