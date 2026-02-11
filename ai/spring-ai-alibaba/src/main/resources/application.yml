@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: spring-ai-alibaba
+  
+  # 数据源配置
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mydatabase}
+    username: ${SPRING_DATASOURCE_USERNAME:myuser}
+    password: ${SPRING_DATASOURCE_PASSWORD:mypassword}
+    driver-class-name: org.postgresql.Driver
+  
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  
+  # AI配置
+  ai:
+    dashscope:
+      agent:
+        app-id: ${APP_ID}
+      api-key: ${DASHSCOPE_API_KEY}
+      #workspace-id: ${WORKSPACE_ID}
+    
+    # PGVector配置
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1536
+
+server:
+    port: 9000
+
+#custom:
+#  keys:
+#    authorization: Bearer ${DASHSCOPE_API_KEY}

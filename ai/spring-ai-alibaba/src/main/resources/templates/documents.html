@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/common :: head}">
+    <title>文档列表 - RAG智能问答系统</title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/common :: navbar}"></nav>
+
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title">📋 文档列表</h1>
+
+            <!-- 成功消息 -->
+            <div th:if="${success}" class="alert alert-success">
+                <strong>✓ </strong><span th:text="${success}"></span>
+            </div>
+
+            <!-- 错误消息 -->
+            <div th:if="${error}" class="alert alert-error">
+                <strong>✗ </strong><span th:text="${error}"></span>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <a th:href="@{/documents/upload}" class="btn btn-primary">
+                    ➕ 上传新文档
+                </a>
+            </div>
+
+            <!-- 文档列表 -->
+            <div th:if="${documents != null and !documents.isEmpty()}">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>文件名</th>
+                            <th>文件大小</th>
+                            <th>上传时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="doc : ${documents}">
+                            <td th:text="${doc.id}">1</td>
+                            <td th:text="${doc.fileName}">example.txt</td>
+                            <td th:text="${#numbers.formatDecimal(doc.fileSize / 1024.0, 1, 2)} + ' KB'">10.5 KB</td>
+                            <td th:text="${#temporals.format(doc.uploadTime, 'yyyy-MM-dd HH:mm:ss')}">2026-01-07
+                                10:00:00</td>
+                            <td>
+                                <form th:action="@{/documents/delete/{id}(id=${doc.id})}" method="post"
+                                    style="display: inline;" onsubmit="return confirm('确定要删除这个文档吗？删除后将无法恢复。');">
+                                    <button type="submit" class="btn btn-danger" style="padding: 0.5rem 1rem;">
+                                        🗑️ 删除
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 1rem; color: #666;">
+                    <strong>共 <span th:text="${documents.size()}">0</span> 个文档</strong>
+                </div>
+            </div>
+
+            <!-- 空状态 -->
+            <div th:if="${documents == null or documents.isEmpty()}"
+                style="text-align: center; padding: 3rem; color: #999;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
+                <h3>还没有上传任何文档</h3>
+                <p style="margin: 1rem 0;">上传文档后，就可以开始使用RAG智能问答了</p>
+                <a th:href="@{/documents/upload}" class="btn btn-primary">
+                    立即上传
+                </a>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>📚 文档管理说明</h3>
+            <ul>
+                <li><strong>查看文档：</strong>此页面显示所有已上传的文档及其基本信息</li>
+                <li><strong>删除文档：</strong>点击"删除"按钮可以删除文档，同时会从向量数据库中移除相关数据</li>
+                <li><strong>文档状态：</strong>列表中的文档都已完成向量化处理，可以用于RAG对话</li>
+                <li><strong>存储位置：</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>文档元数据存储在PostgreSQL数据库中</li>
+                        <li>文档向量嵌入存储在PGVector向量数据库中</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background: #fff3e0; border-left-color: #ff9800;">
+            <h3 style="color: #f57c00;">⚠️ 注意事项</h3>
+            <ul>
+                <li><strong>删除操作不可逆：</strong>删除文档后无法恢复，请谨慎操作</li>
+                <li><strong>影响对话：</strong>删除文档后，基于该文档的问答将无法进行</li>
+                <li><strong>建议：</strong>定期整理文档，删除过时或不需要的内容，保持知识库的准确性</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/common :: footer}"></footer>
+</body>
+
+</html>

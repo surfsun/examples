@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/common :: head}">
+    <title>文档上传 - RAG智能问答系统</title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/common :: navbar}"></nav>
+
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title">📤 上传文档</h1>
+
+            <!-- 成功消息 -->
+            <div th:if="${success}" class="alert alert-success">
+                <strong>✓ </strong><span th:text="${success}"></span>
+            </div>
+
+            <!-- 错误消息 -->
+            <div th:if="${error}" class="alert alert-error">
+                <strong>✗ </strong><span th:text="${error}"></span>
+            </div>
+
+            <form th:action="@{/documents/upload}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label" for="file">选择文件</label>
+                    <input type="file" id="file" name="file" class="form-control" accept=".txt,.md" required>
+                    <small style="color: #666; margin-top: 0.5rem; display: block;">
+                        支持的文件格式：.txt, .md | 最大文件大小：10MB
+                    </small>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary">
+                        📤 上传文档
+                    </button>
+                    <a th:href="@{/documents}" class="btn btn-secondary">
+                        查看文档列表
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="info-box">
+            <h3>📖 使用说明</h3>
+            <ul>
+                <li><strong>支持的文件格式：</strong>目前支持 .txt 和 .md（Markdown）格式的文本文件</li>
+                <li><strong>文件大小限制：</strong>单个文件最大不超过 10MB</li>
+                <li><strong>处理流程：</strong>
+                    <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>上传文件后，系统会读取文件内容</li>
+                        <li>将文档内容自动分块（每块约500个token）</li>
+                        <li>为每个文档块生成向量嵌入</li>
+                        <li>存储到PGVector向量数据库中</li>
+                        <li>保存文档元数据到PostgreSQL</li>
+                    </ol>
+                </li>
+                <li><strong>注意事项：</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>请确保文档内容为UTF-8编码</li>
+                        <li>大文件处理可能需要几秒钟时间，请耐心等待</li>
+                        <li>上传成功后可以在"文档列表"中查看</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background: #e8f5e9; border-left-color: #4caf50;">
+            <h3 style="color: #2e7d32;">💡 最佳实践</h3>
+            <ul>
+                <li><strong>文档质量：</strong>上传结构清晰、内容准确的文档，AI回答会更精准</li>
+                <li><strong>文档数量：</strong>建议上传多个相关文档，形成完整的知识库</li>
+                <li><strong>文档更新：</strong>如需更新文档，可先删除旧文档再上传新版本</li>
+                <li><strong>内容建议：</strong>技术文档、产品说明、FAQ、知识库文章等都是很好的选择</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/common :: footer}"></footer>
+</body>
+
+</html>

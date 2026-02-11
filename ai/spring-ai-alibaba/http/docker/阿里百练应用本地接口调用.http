@@ -1,0 +1,6 @@
+### 直接返回内容
+GET http://localhost:19000/ai/bailian/agent/call?message=从供应商张三采购了500斤苹果，每斤6元,放入成都仓库，用现金支付。
+
+
+### 流式返回内容
+GET http://localhost:19000/ai/bailian/agent/stream

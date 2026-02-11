@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/common :: head}">
+    <title>首页 - RAG智能问答系统</title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/common :: navbar}"></nav>
+
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title">🎯 欢迎使用RAG智能问答系统</h1>
+            <p class="card-description" style="text-align: center; font-size: 1.1rem;">
+                基于检索增强生成（RAG）技术，让AI更懂你的文档
+            </p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📤</div>
+                <h3 class="feature-title">文档上传</h3>
+                <p>支持上传TXT、MD格式的文本文档，系统会自动将文档内容向量化并存储到知识库中。</p>
+                <a th:href="@{/documents/upload}" class="btn btn-primary" style="margin-top: 1rem;">立即上传</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3 class="feature-title">文档管理</h3>
+                <p>查看所有已上传的文档，包括文件名、大小、上传时间等信息，支持删除不需要的文档。</p>
+                <a th:href="@{/documents}" class="btn btn-primary" style="margin-top: 1rem;">查看文档</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3 class="feature-title">智能对话</h3>
+                <p>基于已上传的文档进行智能问答，AI会从知识库中检索相关内容并给出准确回答。</p>
+                <a th:href="@{/rag/chat}" class="btn btn-primary" style="margin-top: 1rem;">开始对话</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3 class="feature-title">联网搜索</h3>
+                <p>具备互联网搜索能力的对话，AI会自动搜索互联网最新信息并整合回答，更具实时性。</p>
+                <a th:href="@{/web/chat}" class="btn btn-primary" style="margin-top: 1rem;">联网对话</a>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>💡 什么是RAG？</h3>
+            <p><strong>RAG（Retrieval-Augmented Generation，检索增强生成）</strong>是一种结合了信息检索和文本生成的AI技术。</p>
+            <ul>
+                <li><strong>工作原理：</strong>当您提问时，系统首先从您上传的文档中检索相关内容，然后将这些内容作为上下文提供给大语言模型，最后生成准确的回答。</li>
+                <li><strong>核心优势：</strong>相比普通AI对话，RAG能够基于您的专属知识库回答问题，避免AI"胡编乱造"，确保答案有据可依。</li>
+                <li><strong>应用场景：</strong>企业知识库问答、技术文档查询、学习资料助手等。</li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background: #fff3e0; border-left-color: #ff9800;">
+            <h3 style="color: #f57c00;">🚀 快速开始</h3>
+            <ul>
+                <li><strong>第一步：</strong>点击"文档上传"，上传您的知识文档（支持.txt和.md格式）</li>
+                <li><strong>第二步：</strong>等待文档处理完成（系统会自动分块并向量化）</li>
+                <li><strong>第三步：</strong>进入"智能对话"，开始基于您的文档进行问答</li>
+                <li><strong>提示：</strong>上传的文档越多、内容越丰富，AI的回答就越准确！</li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background: #f3e5f5; border-left-color: #9c27b0;">
+            <h3 style="color: #7b1fa2;">⚙️ 技术架构</h3>
+            <ul>
+                <li><strong>后端框架：</strong>Spring Boot + Spring AI</li>
+                <li><strong>AI模型：</strong>阿里云通义千问（DashScope）</li>
+                <li><strong>向量数据库：</strong>PostgreSQL + PGVector扩展</li>
+                <li><strong>前端模板：</strong>Thymeleaf</li>
+                <li><strong>核心技术：</strong>文档分块、向量嵌入、相似度搜索、提示词工程</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/common :: footer}"></footer>
+</body>
+
+</html>

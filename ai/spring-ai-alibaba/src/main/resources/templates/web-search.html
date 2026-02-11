@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/common :: head}">
+    <title>联网搜索 - RAG智能问答系统</title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/common :: navbar}"></nav>
+
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title">🌐 联网搜索对话</h1>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message message-assistant">
+                        <strong>AI助手：</strong>
+                        <p>您好！我是具备联网搜索能力的AI助手。您可以询问我关于最近发生的新闻、实时的天气信息，或者任何需要联网查询的问题。</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <input type="text" id="messageInput" class="form-control chat-input" placeholder="输入您的问题（支持联网搜索）..."
+                        onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="btn btn-primary" id="sendBtn">
+                        发送
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>💡 联网搜索优势</h3>
+            <ul>
+                <li><strong>实时性：</strong>可以获取网页上的最新信息，弥补大模型知识库的滞后。</li>
+                <li><strong>准确性：</strong>对于具体的事实、新闻、数据，通过搜索可以提供更可靠的回答。</li>
+                <li><strong>广度：</strong>不再局限于训练数据，可以调取全网公开资料。</li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background: #e8f5e9; border-left-color: #4caf50;">
+            <h3 style="color: #2e7d32;">🌐 功能介绍</h3>
+            <p>本功能集成了阿里云通义千问的联网搜索能力。当您提问时，AI会根据需要自动搜索互联网内容，并将搜索到的结果整合进回答中。</p>
+            <p><strong>注意：</strong>联网搜索可能会比普通的对话稍慢一些，请耐心等待。</p>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/common :: footer}"></footer>
+
+    <script th:src="@{/js/web-search.js}"></script>
+</body>
+
+</html>

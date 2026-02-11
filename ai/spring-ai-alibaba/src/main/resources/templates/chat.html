@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/common :: head}">
+    <title>智能对话 - RAG智能问答系统</title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/common :: navbar}"></nav>
+
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title">💬 RAG智能对话</h1>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message message-assistant">
+                        <strong>AI助手：</strong>
+                        <p>您好！我是基于您上传文档的智能助手。请问有什么可以帮助您的？</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <input type="text" id="messageInput" class="form-control chat-input" placeholder="输入您的问题..."
+                        onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="btn btn-primary" id="sendBtn">
+                        发送
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>💡 使用技巧</h3>
+            <ul>
+                <li><strong>提问方式：</strong>尽量提出具体、明确的问题，AI会从文档中检索相关内容回答</li>
+                <li><strong>上下文理解：</strong>AI会基于检索到的文档内容回答，如果文档中没有相关信息，会明确告知</li>
+                <li><strong>最佳实践：</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>问题要具体，避免过于宽泛</li>
+                        <li>可以询问文档中的具体概念、步骤、方法等</li>
+                        <li>如果回答不准确，尝试换个方式提问</li>
+                    </ul>
+                </li>
+                <li><strong>检索机制：</strong>系统会自动检索最相关的5个文档片段作为上下文</li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background: #e3f2fd; border-left-color: #2196f3;">
+            <h3 style="color: #1976d2;">🔍 RAG工作流程</h3>
+            <ol style="margin-left: 1.5rem;">
+                <li><strong>接收问题：</strong>您输入问题后，系统将问题转换为向量</li>
+                <li><strong>相似度搜索：</strong>在向量数据库中搜索与问题最相关的文档片段</li>
+                <li><strong>构建上下文：</strong>将检索到的文档片段组合成上下文</li>
+                <li><strong>生成回答：</strong>大语言模型基于上下文和问题生成准确回答</li>
+                <li><strong>返回结果：</strong>将回答展示给您，并标注来源文档</li>
+            </ol>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/common :: footer}"></footer>
+
+    <script th:src="@{/js/chat.js}"></script>
+</body>
+
+</html>
