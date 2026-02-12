@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>死信队列 - RabbitMQ 教学</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar"><div class="container" style="max-width:1200px;display:flex;justify-content:space-between;align-items:center;">
+    <a class="navbar-brand" th:href="@{/}"><i class="fas fa-plug"></i> RabbitMQ 教学平台</a>
+    <div style="display:flex;gap:1.5rem;"><a class="nav-link" th:href="@{/}">首页</a><a class="nav-link" th:href="@{/quiz}">知识问答</a></div>
+</div></nav>
+<div class="main-container demo-page">
+    <a th:href="@{/}" class="back-link"><i class="fas fa-arrow-left"></i> 返回首页</a>
+    <h2><i class="fas fa-skull-crossbones" style="color:var(--accent-red)"></i> 死信队列</h2>
+    <p class="subtitle">Dead Letter Exchange — 消息处理失败后的兜底方案</p>
+
+    <div class="panel">
+        <div class="panel-title"><i class="fas fa-project-diagram"></i> 架构图解</div>
+        <div class="flow-diagram">
+            <div class="flow-node producer"><i class="fas fa-user" style="color:var(--accent-blue)"></i><span class="label">生产者</span></div>
+            <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="flow-node queue"><i class="fas fa-inbox" style="color:var(--accent-orange)"></i><span class="label">业务队列</span><span class="sub">TTL=10s</span></div>
+            <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="flow-node" style="border-color:var(--accent-red)"><i class="fas fa-exclamation-circle" style="color:var(--accent-red)"></i><span class="label">❌ 处理失败</span></div>
+            <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="flow-node exchange"><i class="fas fa-exchange-alt" style="color:var(--accent-red)"></i><span class="label">DLX</span><span class="sub">死信交换机</span></div>
+            <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="flow-node consumer"><i class="fas fa-recycle" style="color:var(--accent-green)"></i><span class="label">死信处理</span></div>
+        </div>
+        <div class="tip-card info" style="margin-top:1rem;">
+            <h4>⚰️ 触发死信的三种条件</h4>
+            <ul>
+                <li><strong>消息被拒绝</strong> — basic.reject / basic.nack 且 requeue=false</li>
+                <li><strong>消息过期</strong> — 消息 TTL 到期</li>
+                <li><strong>队列已满</strong> — 队列达到最大长度限制</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="panel control-panel">
+        <div class="panel-title"><i class="fas fa-paper-plane"></i> 发送消息（消费者会模拟处理失败）</div>
+        <div style="display:flex;gap:0.75rem;margin-bottom:0.75rem;">
+            <input type="text" class="form-control" id="msgInput" placeholder="输入消息..." value="模拟业务处理失败">
+            <button class="btn-send" onclick="doSend()" style="white-space:nowrap;"><i class="fas fa-paper-plane"></i> 发送</button>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+            <button class="btn-preset" onclick="doPreset('支付超时订单')">⏰ 支付超时</button>
+            <button class="btn-preset" onclick="doPreset('处理异常消息')">💥 异常消息</button>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="panel-title" style="margin-bottom:0;"><i class="fas fa-stream"></i> 实时消息日志</div>
+            <button class="btn-preset" onclick="clearLogs('logBox')">清空</button>
+        </div>
+        <div id="logBox" class="log-container" style="margin-top:0.75rem;">
+            <div class="log-empty"><i class="fas fa-inbox"></i> 暂无消息</div>
+        </div>
+    </div>
+
+    <div class="tip-card info">
+        <h4>📌 典型应用场景</h4>
+        <ul>
+            <li>订单超时自动取消</li>
+            <li>消费失败后告警通知</li>
+            <li>异常消息归档分析</li>
+            <li>消息重试达到上限后的补偿处理</li>
+        </ul>
+    </div>
+</div>
+<div class="footer">© 2025 RabbitMQ 教学平台</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<script>
+    connectSSE('dlx', 'logBox');
+    function doSend() {
+        const msg = document.getElementById('msgInput').value.trim();
+        if (!msg) return showToast('请输入消息', 'error');
+        sendMsg('/api/dlx', {message: msg});
+    }
+    function doPreset(msg) { document.getElementById('msgInput').value = msg; doSend(); }
+    document.getElementById('msgInput').addEventListener('keypress', e => { if(e.key==='Enter') doSend(); });
+</script>
+</body>
+</html>

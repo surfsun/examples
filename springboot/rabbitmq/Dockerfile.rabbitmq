@@ -1,0 +1,7 @@
+FROM rabbitmq:3.13-management
+
+# 复制本地插件文件到容器
+COPY rabbitmq_delayed_message_exchange-3.13.0.ez /opt/rabbitmq/plugins/
+
+# 启用x-delayed-message插件
+RUN rabbitmq-plugins enable rabbitmq_delayed_message_exchange

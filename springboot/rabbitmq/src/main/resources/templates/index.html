@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RabbitMQ 教学平台</title>
+    <meta
+      name="description"
+      content="RabbitMQ 8种经典消息模式交互式教学平台，含实例演示和知识问答"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div
+        class="container"
+        style="
+          max-width: 1200px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <a class="navbar-brand" th:href="@{/}">
+          <i class="fas fa-plug"></i> RabbitMQ 教学平台
+        </a>
+        <div style="display: flex; gap: 1.5rem">
+          <a class="nav-link" th:href="@{/}">首页</a>
+          <a class="nav-link" th:href="@{/quiz}">知识问答</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="main-container">
+      <!-- Hero -->
+      <div class="hero">
+        <h1><i class="fas fa-graduation-cap"></i> RabbitMQ 消息模式教学</h1>
+        <p>8种经典消息模式 · 交互式演示 · 知识问答考核</p>
+      </div>
+
+      <!-- 基础模式 -->
+      <div class="section-title">🟢 基础模式</div>
+      <div class="card-grid">
+        <a th:href="@{/demo/simple}" class="pattern-card card-green">
+          <div class="card-icon"><i class="fas fa-arrow-right"></i></div>
+          <h3>简单队列模式</h3>
+          <p>一个生产者 → 一个队列 → 一个消费者，最基本的消息传递。</p>
+          <span class="card-tag">Simple Queue</span>
+        </a>
+        <a th:href="@{/demo/work}" class="pattern-card card-orange">
+          <div class="card-icon"><i class="fas fa-users-cog"></i></div>
+          <h3>工作队列模式</h3>
+          <p>多个消费者竞争消费同一队列，实现负载均衡和并行处理。</p>
+          <span class="card-tag">Work Queue</span>
+        </a>
+        <a th:href="@{/demo/fanout}" class="pattern-card card-cyan">
+          <div class="card-icon"><i class="fas fa-broadcast-tower"></i></div>
+          <h3>发布/订阅模式</h3>
+          <p>一条消息广播到所有订阅者，适用于系统通知和新闻推送。</p>
+          <span class="card-tag">Fanout Exchange</span>
+        </a>
+      </div>
+
+      <!-- 进阶模式 -->
+      <div class="section-title">🟡 进阶模式</div>
+      <div class="card-grid">
+        <a th:href="@{/demo/direct}" class="pattern-card">
+          <div class="card-icon"><i class="fas fa-route"></i></div>
+          <h3>路由模式</h3>
+          <p>根据 routing key 精确匹配，将消息路由到指定队列。</p>
+          <span class="card-tag">Direct Exchange</span>
+        </a>
+        <a th:href="@{/demo/topic}" class="pattern-card card-purple">
+          <div class="card-icon"><i class="fas fa-sitemap"></i></div>
+          <h3>主题模式</h3>
+          <p>使用通配符（* 和 #）匹配 routing key，灵活的消息路由。</p>
+          <span class="card-tag">Topic Exchange</span>
+        </a>
+      </div>
+
+      <!-- 高级模式 -->
+      <div class="section-title">🔴 高级模式</div>
+      <div class="card-grid">
+        <a th:href="@{/demo/dlx}" class="pattern-card card-red">
+          <div class="card-icon"><i class="fas fa-skull-crossbones"></i></div>
+          <h3>死信队列</h3>
+          <p>消息处理失败或过期后的兜底方案，确保消息不会丢失。</p>
+          <span class="card-tag">Dead Letter Exchange</span>
+        </a>
+        <a th:href="@{/demo/delay}" class="pattern-card card-orange">
+          <div class="card-icon"><i class="fas fa-clock"></i></div>
+          <h3>延迟队列 (TTL)</h3>
+          <p>基于 TTL + DLX 实现的延迟消息，适用于订单超时等场景。</p>
+          <span class="card-tag">TTL + DLX</span>
+        </a>
+        <a th:href="@{/demo/plugin-delay}" class="pattern-card card-pink">
+          <div class="card-icon"><i class="fas fa-bolt"></i></div>
+          <h3>插件延迟队列</h3>
+          <p>基于 x-delayed-message 插件，精准延迟，无队头阻塞。</p>
+          <span class="card-tag">Plugin Delay</span>
+        </a>
+      </div>
+
+      <!-- 知识问答入口 -->
+      <div class="section-title">📝 学习考核</div>
+      <div class="card-grid">
+        <a
+          th:href="@{/quiz}"
+          class="pattern-card card-purple"
+          style="grid-column: span 2"
+        >
+          <div style="display: flex; align-items: center; gap: 1.25rem">
+            <div
+              class="card-icon"
+              style="
+                width: 56px;
+                height: 56px;
+                font-size: 1.5rem;
+                flex-shrink: 0;
+              "
+            >
+              <i class="fas fa-question-circle"></i>
+            </div>
+            <div>
+              <h3>RabbitMQ 知识问答</h3>
+              <p>
+                15道精选题目（基础 · 进阶 · 高级），检验你的 RabbitMQ
+                知识掌握程度。每题附详细解析。
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">© 2025 RabbitMQ 教学平台 · 用于学习和演示目的</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

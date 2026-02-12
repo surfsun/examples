@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题模式 - RabbitMQ 教学</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar"><div class="container" style="max-width:1200px;display:flex;justify-content:space-between;align-items:center;">
+    <a class="navbar-brand" th:href="@{/}"><i class="fas fa-plug"></i> RabbitMQ 教学平台</a>
+    <div style="display:flex;gap:1.5rem;"><a class="nav-link" th:href="@{/}">首页</a><a class="nav-link" th:href="@{/quiz}">知识问答</a></div>
+</div></nav>
+<div class="main-container demo-page">
+    <a th:href="@{/}" class="back-link"><i class="fas fa-arrow-left"></i> 返回首页</a>
+    <h2><i class="fas fa-sitemap" style="color:var(--accent-purple)"></i> 主题模式</h2>
+    <p class="subtitle">Topic Exchange — 使用通配符灵活匹配 Routing Key</p>
+
+    <div class="panel">
+        <div class="panel-title"><i class="fas fa-project-diagram"></i> 架构图解</div>
+        <div class="flow-diagram">
+            <div class="flow-node producer"><i class="fas fa-user" style="color:var(--accent-blue)"></i><span class="label">生产者</span></div>
+            <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="flow-node exchange"><i class="fas fa-exchange-alt" style="color:var(--accent-purple)"></i><span class="label">Topic Exchange</span><span class="sub">通配符匹配</span></div>
+            <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <span style="font-size:0.7rem;color:var(--accent-blue);white-space:nowrap;">user.*</span>
+                    <div class="flow-node consumer"><i class="fas fa-user" style="color:var(--accent-blue)"></i><span class="label">用户队列</span></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <span style="font-size:0.7rem;color:var(--accent-orange);white-space:nowrap;">order.*</span>
+                    <div class="flow-node consumer"><i class="fas fa-shopping-cart" style="color:var(--accent-orange)"></i><span class="label">订单队列</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="tip-card info" style="margin-top:1rem;">
+            <h4>📐 通配符规则</h4>
+            <ul>
+                <li><code style="color:var(--accent-green)">*</code> — 匹配<strong>恰好一个</strong>单词。例如 <code>user.*</code> 匹配 <code>user.create</code>，不匹配 <code>user.info.detail</code></li>
+                <li><code style="color:var(--accent-green)">#</code> — 匹配<strong>零个或多个</strong>单词。例如 <code>user.#</code> 匹配 <code>user</code>、<code>user.create</code>、<code>user.info.detail</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="panel control-panel">
+        <div class="panel-title"><i class="fas fa-paper-plane"></i> 发送消息</div>
+        <div style="display:flex;gap:0.75rem;margin-bottom:0.75rem;">
+            <input type="text" class="form-control" id="rkInput" placeholder="Routing Key" value="user.create" style="max-width:200px;font-family:monospace;">
+            <input type="text" class="form-control" id="msgInput" placeholder="消息内容..." value="新用户注册成功">
+            <button class="btn-send" onclick="doSend()" style="white-space:nowrap;"><i class="fas fa-paper-plane"></i> 发送</button>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+            <button class="btn-preset" onclick="doTopic('user.create','新用户注册')">👤 user.create</button>
+            <button class="btn-preset" onclick="doTopic('user.update','用户信息更新')">✏️ user.update</button>
+            <button class="btn-preset" onclick="doTopic('order.create','新订单创建')">🛒 order.create</button>
+            <button class="btn-preset" onclick="doTopic('order.complete','订单已完成')">✅ order.complete</button>
+            <button class="btn-preset" onclick="doTopic('payment.success','支付成功')">💳 payment.success</button>
+        </div>
+        <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.5rem;">
+            💡 提示：<code>payment.success</code> 不匹配任何绑定模式（user.* / order.*），消息将被丢弃
+        </p>
+    </div>
+
+    <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="panel-title" style="margin-bottom:0;"><i class="fas fa-stream"></i> 实时消息日志</div>
+            <button class="btn-preset" onclick="clearLogs('logBox')">清空</button>
+        </div>
+        <div id="logBox" class="log-container" style="margin-top:0.75rem;">
+            <div class="log-empty"><i class="fas fa-inbox"></i> 暂无消息</div>
+        </div>
+    </div>
+</div>
+<div class="footer">© 2025 RabbitMQ 教学平台</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<script>
+    connectSSE('topic', 'logBox');
+    function doSend() {
+        const rk = document.getElementById('rkInput').value.trim();
+        const msg = document.getElementById('msgInput').value.trim();
+        if (!rk || !msg) return showToast('请输入 Routing Key 和消息', 'error');
+        sendMsg('/api/topic', {routingKey: rk, message: msg});
+    }
+    function doTopic(rk, msg) {
+        document.getElementById('rkInput').value = rk;
+        document.getElementById('msgInput').value = msg;
+        doSend();
+    }
+    document.getElementById('msgInput').addEventListener('keypress', e => { if(e.key==='Enter') doSend(); });
+</script>
+</body>
+</html>

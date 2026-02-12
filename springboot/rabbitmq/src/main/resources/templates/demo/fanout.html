@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布/订阅模式 - RabbitMQ 教学</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar"><div class="container" style="max-width:1200px;display:flex;justify-content:space-between;align-items:center;">
+    <a class="navbar-brand" th:href="@{/}"><i class="fas fa-plug"></i> RabbitMQ 教学平台</a>
+    <div style="display:flex;gap:1.5rem;"><a class="nav-link" th:href="@{/}">首页</a><a class="nav-link" th:href="@{/quiz}">知识问答</a></div>
+</div></nav>
+<div class="main-container demo-page">
+    <a th:href="@{/}" class="back-link"><i class="fas fa-arrow-left"></i> 返回首页</a>
+    <h2><i class="fas fa-broadcast-tower" style="color:var(--accent-cyan)"></i> 发布/订阅模式</h2>
+    <p class="subtitle">Fanout Exchange — 消息广播到所有订阅者</p>
+
+    <div class="panel">
+        <div class="panel-title"><i class="fas fa-project-diagram"></i> 架构图解</div>
+        <div class="flow-diagram">
+            <div class="flow-node producer"><i class="fas fa-user" style="color:var(--accent-blue)"></i><span class="label">生产者</span></div>
+            <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="flow-node exchange"><i class="fas fa-exchange-alt" style="color:var(--accent-cyan)"></i><span class="label">Fanout Exchange</span><span class="sub">忽略 routing key</span></div>
+            <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <div class="flow-node queue"><i class="fas fa-inbox" style="color:var(--accent-orange)"></i><span class="label">Queue 1</span></div>
+                    <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                    <div class="flow-node consumer"><i class="fas fa-bell" style="color:var(--accent-green)"></i><span class="label">订阅者 1</span></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <div class="flow-node queue"><i class="fas fa-inbox" style="color:var(--accent-orange)"></i><span class="label">Queue 2</span></div>
+                    <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                    <div class="flow-node consumer"><i class="fas fa-bell" style="color:var(--accent-purple)"></i><span class="label">订阅者 2</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="tip-card info" style="margin-top:1rem;">
+            <h4>💡 生动理解</h4>
+            <p style="font-size:0.85rem;color:var(--text-secondary);margin:0;">就像电视台广播 — 电视台播出节目，所有调到该频道的电视机都能同时收到相同的节目内容。每个订阅者都收到完整的消息副本。</p>
+        </div>
+    </div>
+
+    <div class="panel control-panel">
+        <div class="panel-title"><i class="fas fa-paper-plane"></i> 发布消息</div>
+        <div style="display:flex;gap:0.75rem;margin-bottom:0.75rem;">
+            <input type="text" class="form-control" id="newsInput" placeholder="输入广播消息..." value="系统维护通知：今晚10点进行升级">
+            <button class="btn-send" onclick="doSend()" style="white-space:nowrap;"><i class="fas fa-broadcast-tower"></i> 广播</button>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+            <button class="btn-preset" onclick="doPreset('🔔 新版本发布：v2.0 已上线')">版本通知</button>
+            <button class="btn-preset" onclick="doPreset('⚡ 紧急通知：服务器迁移')">紧急通知</button>
+            <button class="btn-preset" onclick="doPreset('🎉 活动推送：双11大促开始')">活动推送</button>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="panel-title" style="margin-bottom:0;"><i class="fas fa-stream"></i> 实时消息日志</div>
+            <button class="btn-preset" onclick="clearLogs('logBox')">清空</button>
+        </div>
+        <div id="logBox" class="log-container" style="margin-top:0.75rem;">
+            <div class="log-empty"><i class="fas fa-inbox"></i> 暂无消息</div>
+        </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="tip-card pros">
+            <h4><i class="fas fa-check-circle" style="color:var(--accent-green)"></i> 核心特性</h4>
+            <ul><li>Fanout Exchange 忽略所有 routing key</li><li>每个绑定的队列都会收到消息副本</li><li>新增订阅者只需新增队列绑定</li></ul>
+        </div>
+        <div class="tip-card info">
+            <h4><i class="fas fa-lightbulb" style="color:var(--accent-blue)"></i> 适用场景</h4>
+            <ul><li>系统广播通知</li><li>新闻/公告推送</li><li>缓存失效通知</li></ul>
+        </div>
+    </div>
+</div>
+<div class="footer">© 2025 RabbitMQ 教学平台</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<script>
+    connectSSE('fanout', 'logBox');
+    function doSend() {
+        const n = document.getElementById('newsInput').value.trim();
+        if (!n) return showToast('请输入消息', 'error');
+        sendMsg('/api/fanout', {news: n});
+    }
+    function doPreset(n) { document.getElementById('newsInput').value = n; doSend(); }
+    document.getElementById('newsInput').addEventListener('keypress', e => { if(e.key==='Enter') doSend(); });
+</script>
+</body>
+</html>
