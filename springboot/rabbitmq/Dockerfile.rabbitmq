@@ -1,7 +1,8 @@
+# 使用 RabbitMQ 3.13 管理版本作为基础镜像
 FROM rabbitmq:3.13-management
 
-# 复制本地插件文件到容器
-COPY rabbitmq_delayed_message_exchange-3.13.0.ez /opt/rabbitmq/plugins/
+# 复制本地插件文件到容器，并设置正确的所有者
+COPY --chown=rabbitmq:rabbitmq rabbitmq_delayed_message_exchange-3.13.0.ez /opt/rabbitmq/plugins/
 
-# 启用x-delayed-message插件
-RUN rabbitmq-plugins enable rabbitmq_delayed_message_exchange
+# 启用 x-delayed-message 插件（使用 --offline 标志更稳定）
+RUN rabbitmq-plugins enable --offline rabbitmq_delayed_message_exchange
