@@ -8,6 +8,7 @@ import com.alibaba.cloud.ai.graph.exception.GraphRunnerException;
 import com.alibaba.cloud.ai.graph.exception.SubGraphInterruptionException;
 import com.alibaba.cloud.ai.graph.RunnableConfig;
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayDeque;
@@ -21,7 +22,7 @@ public class WeatherServiceImpl implements WeatherService {
 
     private final ReactAgent agent;
 
-    public WeatherServiceImpl(ReactAgent weatherAgent) {
+    public WeatherServiceImpl(@Qualifier("weatherAgent") ReactAgent weatherAgent) {
         this.agent = weatherAgent;
     }
 

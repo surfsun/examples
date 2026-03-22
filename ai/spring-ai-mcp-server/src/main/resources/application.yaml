@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: spring-ai-mcp-server
+
+  ai:
+    mcp:
+      server:
+        protocol: SSE
+        type: SYNC
+
+server:
+  port: 9001

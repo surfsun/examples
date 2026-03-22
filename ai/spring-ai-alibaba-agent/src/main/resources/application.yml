@@ -11,7 +11,10 @@ spring:
 
       api-key: ${api-key}
 
+app:
+  mcp:
+    server-url: http://localhost:9001
+
 
 server:
   port: 9000
-
