@@ -1,0 +1,17 @@
+
+
+spring:
+  application:
+    name: spring-ai-alibaba-agent
+
+
+  # AI??
+  ai:
+    dashscope:
+
+      api-key: ${api-key}
+
+
+server:
+  port: 9000
+

@@ -1,0 +1,33 @@
+### agent chat - step 1 (may return NEED_HUMAN_APPROVAL)
+# @name step1
+POST http://localhost:9000/agent/chat
+Content-Type: application/json
+
+{
+  "message": "重庆市的天气怎么样",
+  "threadId": "weather-thread-1",
+  "userId": "1"
+}
+> {%
+  if (response.body && response.body.pendingToolCalls && response.body.pendingToolCalls.length > 0) {
+    client.global.set("toolCallId", response.body.pendingToolCalls[0].toolCallId);
+  }
+%}
+
+
+### agent chat - step 2 (approve tool execution)
+POST http://localhost:9000/agent/chat
+Content-Type: application/json
+
+{
+  "message": "重庆市的天气怎么样",
+  "threadId": "weather-thread-1",
+  "userId": "1",
+  "feedbacks": [
+    {
+      "toolCallId": "{{toolCallId}}",
+      "toolName": "get_weather_for_location",
+      "result": "APPROVED"
+    }
+  ]
+}

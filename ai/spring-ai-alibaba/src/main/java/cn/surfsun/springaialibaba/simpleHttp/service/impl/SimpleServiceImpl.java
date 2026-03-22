@@ -27,7 +27,10 @@ public class SimpleServiceImpl implements SimpleService {
                 "messages", List.of(Map.of("role", "user", "content", message)),
                 "stream", false);
 
-        // Ideally we should map the response to a class, but for simplicity returning
+
+        requestBody.put("Authorization", authorization);
+        requestBody.put("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
+     // Ideally we should map the response to a class, but for simplicity returning
         // String or map first to see structure
         // The user asked for "call large model interface".
 
